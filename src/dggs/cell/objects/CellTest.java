@@ -51,4 +51,19 @@ class CellTest {
 		assertTrue(test1.equals(test2));
 	}
 	
+	// cell equality
+	@Test
+	void testEquality() {
+		Cell cell1 = new Cell("R1");
+		Cell cell2 = new Cell("R1");
+		assertTrue(cell1.equals(cell2));
+	}
+	
+	// cell inequality
+	@Test
+	void testInEquality() {
+		Cell cell1 = new Cell("R1");
+		Cell cell2 = new Cell("R2");
+		assertFalse(cell1.equals(cell2));
+	}
 }

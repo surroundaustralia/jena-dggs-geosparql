@@ -6,10 +6,13 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.expr.nodevalue.NodeValueNode;
+import com.google.common.base.Objects;
+
+
 
 public class Cell {
 	
-	private String suid;
+	public String suid;
 
 	public Cell(String suid)
 	{
@@ -28,6 +31,18 @@ public class Cell {
 	public CellCollection add(Cell otherCell) {
 		Cell[] cells = {this, otherCell};
 	    return new CellCollection(cells);
+	}
+	
+    @Override
+    public int hashCode() {
+        return this.suid.hashCode();
+    }
+	
+	public Boolean equals(Cell otherCell) {
+		if (this.suid.equals(otherCell.suid)) {
+			return true;
+		}
+		else return false;
 	}
 
 }
