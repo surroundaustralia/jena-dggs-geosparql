@@ -23,18 +23,13 @@ public class CellCollection {
 		
 		// "absorb" children in to parents e.g. {R1, R11} -> {R1}
 		for (int cell=0; cell < this.cells.length; cell++) {
-//			Set<String> ancestorCellsSet = new HashSet<String>();
-//			List<Cell> remainingCells = new ArrayList<Cell>();
+
 			int max_ancestor_len = this.cells[cell].suid.length() - 1;
 			for (int i=0; i < max_ancestor_len; i++) {
 				Cell ancestor_cell = new Cell(this.cells[cell].suid.substring(0, i+1));
 				if (Arrays.asList(this.cells).contains(ancestor_cell)) {
 					cellList.remove(cell);
 				}
-//					ancestorCellsSet.add(this.cells[cell].suid);
-//					this.cells.delete
-//				}
-//				ancestorCells.add(new Cell(this.cells[cell].suid.substring(0, i)));
 			}
 		}
 		this.cells = cellList.toArray(new Cell[cellList.size()]);

@@ -6,8 +6,6 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.expr.nodevalue.NodeValueNode;
-import com.google.common.base.Objects;
-
 
 
 public class Cell {
@@ -33,16 +31,41 @@ public class Cell {
 	    return new CellCollection(cells);
 	}
 	
+//    @Override
+//    public int hashCode() {
+//        return this.suid.hashCode();
+//    }
+//	
+//	public Boolean equals(Cell otherCell) {
+//		if (this.suid.equals(otherCell.suid)) {
+//			return true;
+//		}
+//		else return false;
+//	}
+	
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (obj.getClass() != this.getClass()) {
+            return false;
+        }
+
+        final Cell other = (Cell) obj;
+        if ((this.suid == null) ? (other.suid != null) : !this.suid.equals(other.suid)) {
+            return false;
+        }
+
+        return true;
+    }
+    
     @Override
     public int hashCode() {
-        return this.suid.hashCode();
+        int hash = 3;
+        hash = 53 * hash + (this.suid != null ? this.suid.hashCode() : 0);
+        return hash;
     }
-	
-	public Boolean equals(Cell otherCell) {
-		if (this.suid.equals(otherCell.suid)) {
-			return true;
-		}
-		else return false;
-	}
 
 }
