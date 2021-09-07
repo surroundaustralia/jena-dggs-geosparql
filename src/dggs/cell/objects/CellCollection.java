@@ -14,14 +14,14 @@ public class CellCollection {
 	
 	public CellCollection(Cell[] cells)
 	{
-		// deduplicate e.g. {R1, R1} -> {R1}
+		// Deduplicate e.g. {R1, R1} -> {R1}
 		Cell[] cc = cells;
 		Set<String> cellsSet = new HashSet<String>();
 		List<Cell> cellList = new ArrayList<Cell>();
 		for(Cell c: cc) if(cellsSet.add(c.suid)) cellList.add(c);
 		this.cells = cellList.toArray(new Cell[cellList.size()]);
 		
-		// "absorb" children in to parents e.g. {R1, R11} -> {R1}
+		// Absorb children in to parents e.g. {R1, R11} -> {R1}
 		for (int cell=0; cell < this.cells.length; cell++) {
 
 			int max_ancestor_len = this.cells[cell].suid.length() - 1;

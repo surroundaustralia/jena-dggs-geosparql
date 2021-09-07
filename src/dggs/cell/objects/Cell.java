@@ -14,7 +14,7 @@ public class Cell {
 
 	public Cell(String suid)
 	{
-		// validate the suid input
+		// Validate the suid input
 		this.suid = suid;
 		if (!Stream.of("N","O","P","Q","R","S").anyMatch(suid::startsWith)) {
 			throw new IllegalArgumentException("Cell suids must start with one of N, O, P, Q, R, or S");
@@ -26,23 +26,15 @@ public class Cell {
 		}
 	}
 	
+	// Cell Addition
 	public CellCollection add(Cell otherCell) {
 		Cell[] cells = {this, otherCell};
 	    return new CellCollection(cells);
 	}
 	
-//    @Override
-//    public int hashCode() {
-//        return this.suid.hashCode();
-//    }
-//	
-//	public Boolean equals(Cell otherCell) {
-//		if (this.suid.equals(otherCell.suid)) {
-//			return true;
-//		}
-//		else return false;
-//	}
-	
+	// Equals must override the generic Java equals function (then check for type Cell),
+	// otherwise Cells in Arrays that have operations will not know to utilise this method
+	// Equals requires implementing hashcode
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
