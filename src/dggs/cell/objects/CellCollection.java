@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 
 public class CellCollection {
@@ -32,6 +34,16 @@ public class CellCollection {
 				}
 			}
 		}
+		this.cells = cellList.toArray(new Cell[cellList.size()]);
+		
+		// compress
+		Map<String, List<Cell>> cellListGrouped =
+				cellList.stream().collect(Collectors.groupingBy(w -> w.parent().suid));
+		cellListGrouped.forEach((k,v) -> {if (v.size()==9) {
+			cellList.removeAll(v);
+			cellList.add(new Cell(k));
+			}
+		});
 		this.cells = cellList.toArray(new Cell[cellList.size()]);
 	}
 		

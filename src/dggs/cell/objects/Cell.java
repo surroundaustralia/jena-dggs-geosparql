@@ -32,6 +32,12 @@ public class Cell {
 	    return new CellCollection(cells);
 	}
 	
+	// Cell Parent
+	public Cell parent() {
+		Cell parent_cell = new Cell(this.suid.substring(0, this.suid.length()-1));
+	    return parent_cell;
+	}
+	
 	// Equals must override the generic Java equals function (then check for type Cell),
 	// otherwise Cells in Arrays that have operations will not know to utilise this method
 	// Equals requires implementing hashcode

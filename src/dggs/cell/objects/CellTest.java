@@ -66,4 +66,21 @@ class CellTest {
 		Cell cell2 = new Cell("R2");
 		assertFalse(cell1.equals(cell2));
 	}
+	
+	// cell parent valid
+	@Test
+	void testParentPositive() {
+		Cell cell1 = new Cell("R111");
+		Cell cell2 = new Cell("R11");
+		assertTrue(cell1.parent().equals(cell2));
+	}
+	
+	// cell parent valid
+	@Test
+	void testParentNegative() {
+		Cell cell1 = new Cell("R11");
+		Cell cell2 = new Cell("R11");
+		assertFalse(cell1.parent().equals(cell2));
+	}
+	
 }
