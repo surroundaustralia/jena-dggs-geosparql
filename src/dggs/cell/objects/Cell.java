@@ -28,8 +28,8 @@ public class Cell {
 	
 	// Cell Addition
 	public CellCollection add(Cell otherCell) {
-		Cell[] cells = {this, otherCell};
-	    return new CellCollection(cells);
+		String suids= this.suid +" "+ otherCell.suid;
+	    return new CellCollection(suids);
 	}
 	
 	// Cell Parent
@@ -64,6 +64,10 @@ public class Cell {
         int hash = 3;
         hash = 53 * hash + (this.suid != null ? this.suid.hashCode() : 0);
         return hash;
+    }
+    
+    public String toString() {
+        return this.suid;
     }
 
 }

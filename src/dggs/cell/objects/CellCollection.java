@@ -13,14 +13,21 @@ import java.util.stream.Collectors;
 public class CellCollection {
 	
 	public Cell[] cells;
+	public String suids;
 	
-	public CellCollection(Cell[] cells)
-	{
-		// Deduplicate e.g. {R1, R1} -> {R1}
-		Cell[] cc = cells;
-		Set<String> cellsSet = new HashSet<String>();
+//	public CellCollection(Cell[] cells)
+	public CellCollection(String suids)
+	{	
+		String[] string_array = suids.split(" ");
 		List<Cell> cellList = new ArrayList<Cell>();
-		for(Cell c: cc) if(cellsSet.add(c.suid)) cellList.add(c);
+		for(String s: string_array) {
+			cellList.add(new Cell(s));
+		}
+		this.cells = cellList.toArray(new Cell[cellList.size()]);
+
+		// Deduplicate e.g. {R1, R1} -> {R1}
+		Set<String> cellsSet = new HashSet<String>();
+		for(Cell c: this.cells) if(!cellsSet.add(c.suid)) cellList.remove(c);
 		this.cells = cellList.toArray(new Cell[cellList.size()]);
 		
 		// Absorb children in to parents e.g. {R1, R11} -> {R1}
@@ -45,18 +52,21 @@ public class CellCollection {
 			}
 		});
 		this.cells = cellList.toArray(new Cell[cellList.size()]);
+		
+		// order
+		Arrays.sort(this.cells, (a,b) -> a.suid.compareTo(b.suid));
+		
+		// regenerate suids based on cells
+		final String[] sarray = Arrays.stream(this.cells).map(Object::toString).
+                toArray(String[]::new);
+		this.suids = String.join(" ", sarray);
 	}
 		
 	// equals
 	public Boolean equals(CellCollection otherCC) {
-		if (this.cells.length==otherCC.cells.length) {
-			for (int i=0; i < this.cells.length; i++) {
-				  if (!this.cells[i].equals(otherCC.cells[i])) {
-					  return false;
-				  }
-			} return true;
+		if (this.suids.equals(otherCC.suids)) {
+			return true; 
+			}
+		return false;
 		}
-		else return false;
 	}
-
-}
