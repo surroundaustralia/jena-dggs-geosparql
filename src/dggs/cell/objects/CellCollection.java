@@ -1,12 +1,18 @@
 package dggs.cell.objects;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Test;
+
 import java.util.stream.Collectors;
 
 
@@ -16,8 +22,11 @@ public class CellCollection {
 	public String suids;
 	
 //	public CellCollection(Cell[] cells)
-	public CellCollection(String suids)
+	public CellCollection(String suids, Boolean... compress_opt)
 	{	
+		//default compress to true
+		Boolean compress = compress_opt.length > 0 ? compress_opt[0] : true;
+		
 		String[] string_array = suids.split(" ");
 		List<Cell> cellList = new ArrayList<Cell>();
 		for(String s: string_array) {
@@ -44,15 +53,17 @@ public class CellCollection {
 		this.cells = cellList.toArray(new Cell[cellList.size()]);
 		
 		// compress
-		Map<String, List<Cell>> cellListGrouped =
-				cellList.stream().collect(Collectors.groupingBy(w -> w.parent().suid));
-		cellListGrouped.forEach((k,v) -> {if (v.size()==9) {
-			cellList.removeAll(v);
-			cellList.add(new Cell(k));
-			}
-		});
-		this.cells = cellList.toArray(new Cell[cellList.size()]);
-		
+		if (compress) {
+			Map<String, List<Cell>> cellListGrouped =
+					cellList.stream().collect(Collectors.groupingBy(w -> w.parent().suid));
+			cellListGrouped.forEach((k,v) -> {if (v.size()==9) {
+				cellList.removeAll(v);
+				cellList.add(new Cell(k));
+				}
+			});
+			this.cells = cellList.toArray(new Cell[cellList.size()]);
+		}
+			
 		// order
 		Arrays.sort(this.cells, (a,b) -> a.suid.compareTo(b.suid));
 		
@@ -69,4 +80,11 @@ public class CellCollection {
 			}
 		return false;
 		}
+	
+	// CellCollection Addition
+	public CellCollection add(CellCollection otherCC) {
+		String together = String.join(this.suids, otherCC.suids);
+	    return new CellCollection(together);
 	}
+	
+}

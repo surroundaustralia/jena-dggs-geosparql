@@ -1,12 +1,13 @@
 package dggs.cell.objects;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.expr.nodevalue.NodeValueNode;
-
 
 public class Cell {
 	
@@ -26,16 +27,26 @@ public class Cell {
 		}
 	}
 	
-	// Cell Addition
+	// Cell adition
 	public CellCollection add(Cell otherCell) {
 		String suids= this.suid +" "+ otherCell.suid;
 	    return new CellCollection(suids);
 	}
 	
-	// Cell Parent
+	// Cell parent
 	public Cell parent() {
 		Cell parent_cell = new Cell(this.suid.substring(0, this.suid.length()-1));
 	    return parent_cell;
+	}
+	
+	// Cell children
+	public CellCollection children() {
+		String[] suffixes = {"0","1","2","3","4","5","6","7","8"};
+		List<String> suids = new ArrayList<String>();
+		for (String suffix: suffixes) 
+			{suids.add(new String(this.suid + suffix));}
+		String joined_suids = String.join(" ", suids);
+		return new CellCollection(joined_suids, false);
 	}
 	
 	// Equals must override the generic Java equals function (then check for type Cell),
@@ -66,8 +77,18 @@ public class Cell {
         return hash;
     }
     
+    // toString method to support working with an array of Cells - used to 'regenerate' the suids for a CellCollection
+    // this may not be required if there's a way to reference the suid attribute in the 'regenerate' code
     public String toString() {
         return this.suid;
     }
 
+    // 
+    public boolean overlaps(Cell otherCell) {
+    	int min_length = Math.min(this.suid.length(), otherCell.suid.length());
+    	if (this.suid.substring(0, min_length).equals(otherCell.suid.substring(0, min_length))) 
+    		{return true;}
+    	else return false;
+    }
+    
 }

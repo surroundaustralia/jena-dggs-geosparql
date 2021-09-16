@@ -65,4 +65,13 @@ class CellCollectionTest {
 		assertFalse(test1.equals(test2));
 	}
 	
+	@Test
+	void testAdditionPositive() {
+		CellCollection test1 = new CellCollection("R1 R2");
+		CellCollection test2 = new CellCollection("R3 R4");
+		CellCollection test3 = new CellCollection("R1 R2 R3 R4");
+		CellCollection test4 = test1.add(test2);
+		assertFalse(test3.equals(test4));
+	}
+	
 }

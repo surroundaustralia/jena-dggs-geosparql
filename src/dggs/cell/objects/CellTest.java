@@ -40,12 +40,11 @@ class CellTest {
 		
 	}
 	
-	// addition - must define what equals means for this to work!
+	// addition
 	@Test
 	void testAddition() {
 		Cell cell1 = new Cell("R1");
 		Cell cell2 = new Cell("R2");		
-		Cell[] cells = {cell1, cell2};
 		CellCollection test1 = new CellCollection("R1 R2");
 		CellCollection test2 = cell1.add(cell2);
 		assertTrue(test1.equals(test2));
@@ -81,6 +80,46 @@ class CellTest {
 		Cell cell1 = new Cell("R11");
 		Cell cell2 = new Cell("R11");
 		assertFalse(cell1.parent().equals(cell2));
+	}
+	
+	// cell overlap positive 1
+	@Test
+	void testOverlapPositive1() {
+		Cell cell1 = new Cell("R1");
+		Cell cell2 = new Cell("R11");
+		assertTrue(cell1.overlaps(cell2));
+	}
+	
+	// cell overlap positive 2
+	@Test
+	void testOverlapPositive2() {
+		Cell cell1 = new Cell("R11");
+		Cell cell2 = new Cell("R1");
+		assertTrue(cell1.overlaps(cell2));
+	}
+	
+	// cell overlap positive 3
+	@Test
+	void testOverlapPositive3() {
+		Cell cell1 = new Cell("R1");
+		Cell cell2 = new Cell("R1");
+		assertTrue(cell1.overlaps(cell2));
+	}
+	
+	// cell overlap negative
+	@Test
+	void testOverlapNegative() {
+		Cell cell1 = new Cell("R11");
+		Cell cell2 = new Cell("R12");
+		assertFalse(cell1.overlaps(cell2));
+	}
+	
+	// cell children positive
+	@Test
+	void testChildrenPositive() {
+		Cell cell1 = new Cell("R1");
+		CellCollection cell2 = new CellCollection("R10 R11 R12 R13 R14 R15 R16 R17 R18", false);
+		assertTrue(cell1.children().equals(cell2));
 	}
 	
 }
