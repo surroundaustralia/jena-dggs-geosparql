@@ -5,6 +5,14 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>DGGS GeoSPARQL Simple Features</name>
   <description>DGGS GeoSPARQL Simple Feature functions</description>
+  <dependencies>
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <version>5.8.0</version>
+        <scope>test</scope>
+    </dependency>
+  </dependencies>
   <build>
     <sourceDirectory>src</sourceDirectory>
     <plugins>
@@ -18,12 +26,4 @@
       </plugin>
     </plugins>
   </build>
-  <dependencies>
-    <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter</artifactId>
-        <version>5.7.1</version>
-        <scope>test</scope>
-    </dependency>
-  </dependencies>
 </project>
