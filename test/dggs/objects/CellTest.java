@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import dggs.cell.objects.Cell;
 
-class CellTest {
+public class CellTest {
 
 	@Test
 	void testValidZero() {

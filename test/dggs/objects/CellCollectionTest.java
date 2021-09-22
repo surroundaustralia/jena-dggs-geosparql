@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import dggs.cell.objects.CellCollection;
 import dggs.cell.objects.Cell;
 
-class CellCollectionTest {
+public class CellCollectionTest {
 
 	// instantiate basic cell collection
 	
