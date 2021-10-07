@@ -74,4 +74,36 @@ public class CellCollectionTest {
 		assertFalse(test3.equals(test4));
 	}
 	
+	// cell overlap cell collection positive
+	@Test
+	void testOverlapCellCollectionPositive() {
+		Cell cell1 = new Cell("R1");
+		CellCollection cells2 = new CellCollection("R12 R21");
+		assertTrue(cells2.overlaps(cell1));
+	}
+	
+	// cell overlap cell collection negative
+	@Test
+	void testOverlapCellCollectionNegative() {
+		Cell cell1 = new Cell("R11");
+		CellCollection cells2 = new CellCollection("R21 R22");
+		assertFalse(cells2.overlaps(cell1));
+	}
+	
+	// cell overlap cell collection positive
+	@Test
+	void testCCoverlapsCCPositive() {
+		CellCollection cells1 = new CellCollection("R12 R13");
+		CellCollection cells2 = new CellCollection("R13 R14");
+		assertTrue(cells1.overlaps(cells2));
+	}
+	
+	// cell overlap cell collection negative
+	@Test
+	void testCCoverlapsCCNegative() {
+		CellCollection cells1 = new CellCollection("R12 R13");
+		CellCollection cells2 = new CellCollection("R14 R15");
+		assertFalse(cells1.overlaps(cells2));
+	}
+	
 }

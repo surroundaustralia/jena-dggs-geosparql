@@ -122,4 +122,19 @@ public class CellTest {
 		assertTrue(cell1.children().equals(cell2));
 	}
 	
+	// cell overlap cell collection positive
+	@Test
+	void testOverlapCellCollectionPositive() {
+		Cell cell1 = new Cell("R1");
+		CellCollection cells2 = new CellCollection("R12 R21");
+		assertTrue(cell1.overlaps(cells2));
+	}
+	
+	// cell overlap cell collection negative
+	@Test
+	void testOverlapCellCollectionNegative() {
+		Cell cell1 = new Cell("R11");
+		CellCollection cells2 = new CellCollection("R21 R22");
+		assertFalse(cell1.overlaps(cells2));
+	}
 }

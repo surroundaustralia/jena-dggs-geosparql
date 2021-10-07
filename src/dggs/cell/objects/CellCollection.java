@@ -17,7 +17,6 @@ public class CellCollection {
 	public Cell[] cells;
 	public String suids;
 	
-//	public CellCollection(Cell[] cells)
 	public CellCollection(String suids, Boolean... compress_opt)
 	{	
 		//default compress to true
@@ -82,5 +81,26 @@ public class CellCollection {
 		String together = String.join(this.suids, otherCC.suids);
 	    return new CellCollection(together);
 	}
+	
+    // CellCollection overlap Cell - reuse Cell method
+    public boolean overlaps(Cell otherCell) {
+    	return otherCell.overlaps(this);
+    }
+    
+    // CellCollection overlap CellCollection - reuse CellCollection method
+    public boolean overlaps(CellCollection otherCells) {
+    	for (Cell cell: otherCells.cells)
+	    	{
+	    	if (this.overlaps(cell))
+	    		{return true;}
+	    	}
+    	return false;
+    }
+	
+//	// CellCollection Subtraction
+//	public CellCollection subtract(CellCollection otherCC) {
+//		String together = String.join(this.suids, otherCC.suids);
+//	    return new CellCollection(together);
+//	}
 	
 }

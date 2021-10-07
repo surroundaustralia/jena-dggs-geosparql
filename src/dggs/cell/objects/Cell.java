@@ -79,12 +79,23 @@ public class Cell {
         return this.suid;
     }
 
-    // 
+    // Cell overlap Cell
     public boolean overlaps(Cell otherCell) {
     	int min_length = Math.min(this.suid.length(), otherCell.suid.length());
     	if (this.suid.substring(0, min_length).equals(otherCell.suid.substring(0, min_length))) 
     		{return true;}
     	else return false;
+    }
+    
+    // Cell overlap CellCollection
+    public boolean overlaps(CellCollection otherCells) {
+    	for (Cell cell: otherCells.cells)
+	    	{
+    		int min_length = Math.min(this.suid.length(), cell.suid.length());
+	    	if (this.suid.substring(0, min_length).equals(cell.suid.substring(0, min_length))) 
+	    		{return true;}
+	    	}
+    	return false;
     }
     
 }
