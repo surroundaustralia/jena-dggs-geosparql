@@ -1,13 +1,11 @@
-package dggs.cell.objects;
+package test.dggs;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.ArrayList;
-
 import org.junit.jupiter.api.Test;
 
-import dggs.cell.objects.CellCollection;
-import dggs.cell.objects.Cell;
+import main.dggs.cell.objects.CellCollection;
+import main.dggs.cell.objects.Cell;
 
 public class CellCollectionTest {
 
@@ -104,6 +102,16 @@ public class CellCollectionTest {
 		CellCollection cells1 = new CellCollection("R12 R13");
 		CellCollection cells2 = new CellCollection("R14 R15");
 		assertFalse(cells1.overlaps(cells2));
+	}
+	
+	// cell overlap cell collection negative
+	@Test
+	void testSubtraction() {
+		CellCollection cells1 = new CellCollection("R");
+		CellCollection cells2 = new CellCollection("R1");
+		CellCollection cells3 = new CellCollection("R0 R2 R3 R4 R5 R6 R7 R8");
+		CellCollection test = cells1.subtract(cells2);
+		assertEquals(test, cells3);
 	}
 	
 }

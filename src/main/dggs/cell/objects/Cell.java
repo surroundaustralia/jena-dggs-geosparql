@@ -1,4 +1,4 @@
-package dggs.cell.objects;
+package main.dggs.cell.objects;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 public class Cell {
 	
 	public String suid;
+	public int resolution;
 
 	public Cell(String suid)
 	{
@@ -21,9 +22,10 @@ public class Cell {
 				throw new IllegalArgumentException("Cell suids must only contain characters 0..8 after the first character");
 			}
 		}
+		this.resolution = suid.length()-1;
 	}
 	
-	// Cell adition
+	// Cell addition
 	public CellCollection add(Cell otherCell) {
 		String suids= this.suid +" "+ otherCell.suid;
 	    return new CellCollection(suids);
@@ -31,8 +33,13 @@ public class Cell {
 	
 	// Cell parent
 	public Cell parent() {
-		Cell parent_cell = new Cell(this.suid.substring(0, this.suid.length()-1));
-	    return parent_cell;
+		if (this.resolution > 1) {
+			Cell parent_cell = new Cell(this.suid.substring(0, this.suid.length()-1));
+			return parent_cell;
+		}
+		else {
+			return null;
+		}
 	}
 	
 	// Cell children
@@ -97,5 +104,5 @@ public class Cell {
 	    	}
     	return false;
     }
-    
+        
 }

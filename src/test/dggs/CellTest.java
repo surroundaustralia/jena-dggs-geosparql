@@ -1,10 +1,11 @@
-package dggs.cell.objects;
+package test.dggs;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-import dggs.cell.objects.Cell;
+import main.dggs.cell.objects.Cell;
+import main.dggs.cell.objects.CellCollection;
 
 public class CellTest {
 
@@ -82,6 +83,13 @@ public class CellTest {
 		assertFalse(cell1.parent().equals(cell2));
 	}
 	
+	// cell parent zero cell
+	@Test
+	void testParentZeroCell() {
+		Cell cell1 = new Cell("R");
+		assertTrue(cell1.parent() == null);
+	}
+	
 	// cell overlap positive 1
 	@Test
 	void testOverlapPositive1() {
@@ -136,5 +144,17 @@ public class CellTest {
 		Cell cell1 = new Cell("R11");
 		CellCollection cells2 = new CellCollection("R21 R22");
 		assertFalse(cell1.overlaps(cells2));
+	}
+	
+	@Test
+	void testResolution2() {
+		Cell cell1 = new Cell("R11");
+		assertTrue(cell1.resolution == 2);
+	}
+	
+	@Test
+	void testResolution0() {
+		Cell cell1 = new Cell("R");
+		assertTrue(cell1.resolution == 0);
 	}
 }
