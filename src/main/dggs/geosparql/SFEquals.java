@@ -1,8 +1,7 @@
-package main.geosparqlfunctions;
+package main.dggs.geosparql;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.FunctionBase2;
-
-import main.dggs.cell.objects.CellCollection;
+import main.dggs.simpleFeature.RHEALSFEquals;
 
 public class SFEquals extends FunctionBase2{
 
@@ -10,10 +9,10 @@ public class SFEquals extends FunctionBase2{
 
 	@Override
 	public NodeValue exec(NodeValue geom_lit1, NodeValue geom_lit2) {
-		CellCollection cc1 = new CellCollection(geom_lit1.asString());
-		CellCollection cc2 = new CellCollection(geom_lit2.asString());
-		if (cc1.equals(cc2))
+		if (RHEALSFEquals.equals(geom_lit1.asString(), geom_lit2.asString()))
 			{return NodeValue.TRUE ;}
-		return NodeValue.FALSE ;
+		else {
+			return NodeValue.FALSE ;
+		}
 	}
 }

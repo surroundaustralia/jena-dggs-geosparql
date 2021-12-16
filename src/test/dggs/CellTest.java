@@ -2,6 +2,8 @@ package test.dggs;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Map;
+
 import org.junit.jupiter.api.Test;
 
 import main.dggs.cell.objects.Cell;
@@ -156,5 +158,12 @@ public class CellTest {
 	void testResolution0() {
 		Cell cell1 = new Cell("R");
 		assertTrue(cell1.resolution == 0);
+	}
+	
+	@Test
+	void testAtomicNeighbour() {
+		Cell cell1 = new Cell("R");
+		Map<String, Map> neighbours = Cell.atomic_neighbours();
+		Cell cell2 = new Cell("R11");
 	}
 }

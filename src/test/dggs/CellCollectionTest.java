@@ -114,4 +114,55 @@ public class CellCollectionTest {
 		assertEquals(test, cells3);
 	}
 	
+	// cell subtraction
+	@Test
+	void testSubtractionNothingLeft() {
+		CellCollection cells1 = new CellCollection("R");
+		CellCollection cells2 = new CellCollection("R");
+		CellCollection test = cells1.subtract(cells2);
+		assertEquals(test.cells, null);
+		assertEquals(test.suids, null);
+	}
+	
+	// cell subtraction
+	@Test
+	void testSubtractionDisjoint() {
+		CellCollection cells1 = new CellCollection("R");
+		CellCollection cells2 = new CellCollection("P");
+		CellCollection test = cells1.subtract(cells2);
+		CellCollection expected = new CellCollection("R");
+		assertEquals(test, expected);
+	}
+	
+	// cell collection subtraction
+	@Test
+	void testSubtractionSimple() {
+		CellCollection cells1 = new CellCollection("R");
+		CellCollection cells2 = new CellCollection("R1 R3 R5 R7");
+		CellCollection test = cells1.subtract(cells2);
+		CellCollection expected = new CellCollection("R0 R2 R4 R6 R8");
+		assertEquals(test, expected);
+	}
+	
+	// cell collection children
+	@Test
+	void testChildren() {
+		CellCollection cells1 = new CellCollection("R P1").children();
+		CellCollection expectedCells1Children = new CellCollection("R0 R1 R2 R3 R4 R5 R6 R7 R8 P10 P11 P12 P13 P14 P15 P16 P17 P18");
+		assertEquals(cells1, expectedCells1Children);
+	}
+	
+	// cell collection max resolution
+	@Test
+	void testMaxRes() {
+		CellCollection cells1 = new CellCollection("R P1 R23 R345 Q2345");
+		assert(cells1.max_resolution == 4);
+	}
+	
+	// cell collection min resolution
+	@Test
+	void testMinRes() {
+		CellCollection cells1 = new CellCollection("R P1 R23 R345 Q2345");
+		assert(cells1.min_resolution == 0);
+	}
 }
