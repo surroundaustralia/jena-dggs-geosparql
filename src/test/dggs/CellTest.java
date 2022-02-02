@@ -2,6 +2,7 @@ package test.dggs;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,11 @@ import main.dggs.cell.objects.CellCollection;
 
 public class CellTest {
 
+	@Test
+	void test_child_order() {
+		HashMap<int[], Integer> test = new Cell("R1").child_order();
+	}
+	
 	@Test
 	void testValidZero() {
 		new Cell("R1");
@@ -161,9 +167,35 @@ public class CellTest {
 	}
 	
 	@Test
-	void testAtomicNeighbour() {
-		Cell cell1 = new Cell("R");
-		Map<String, Map> neighbours = Cell.atomic_neighbours();
-		Cell cell2 = new Cell("R11");
+	void testNeighbour() {
+		Cell cell1 = new Cell("R1");
+		Cell neighbour = cell1.neighbour("down");
+		Cell cell2 = new Cell("R4");
+		assertEquals(neighbour, cell2);
 	}
+	
+//	@Test
+//	void testNeighboursN() {
+//		Cell cell1 = new Cell("N");
+//		CellCollection neighbours = cell1.neighbours();
+//		CellCollection cell2 = new CellCollection("O P Q R");
+//		assertEquals(neighbours, cell2);
+//	}
+//	
+//	@Test
+//	void testNeighboursP() {
+//		Cell cell1 = new Cell("P");
+//		CellCollection neighbours = cell1.neighbours();
+//		CellCollection cell2 = new CellCollection("N S O Q");
+//		assertEquals(neighbours, cell2);
+//	}
+//	
+//	@Test
+//	void testNeighboursN8() {
+//		Cell cell1 = new Cell("N8");
+//		CellCollection neighbours = cell1.neighbours();
+//		CellCollection cell2 = new CellCollection("N5 N4 N7 O2 P0");
+//		assertEquals(neighbours, cell2);
+//	}
+	
 }

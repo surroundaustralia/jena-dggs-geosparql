@@ -4,23 +4,24 @@ import main.dggs.cell.objects.CellCollection;
 
 public class RHEALSFTouches {
 	public static boolean touches(String cells1, String cells2) {
+		// if equal then do not touch
 		if (RHEALSFEquals.equals(cells1, cells2)) {
 			return false;
 		}
 		CellCollection cc1 = new CellCollection(cells1);
 		CellCollection cc2 = new CellCollection(cells2);
+		// if regional overlap, then do not touch
 		if (cc1.overlaps(cc2)) {
 			return false;
 		}
 		// find the max resolution among the two cell collections
-		int max_res = Math.min(cc1.max_resolution, cc2.min_resolution);
+		int max_res = Math.max(cc1.max_resolution, cc2.max_resolution);
 		// 
 		if (cc1.suids.length() < cc2.suids.length()) {
+			CellCollection smaller_cc_neighbours = new CellCollection(cc1.neighbours(max_res));
 			
 		}
 		return false;
-		
-
 	}
 }
 
