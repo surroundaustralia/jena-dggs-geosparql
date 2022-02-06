@@ -5,10 +5,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import java.util.Arrays;
 import java.util.Collections;
+
+import org.apache.commons.collections4.iterators.PermutationIterator;
 import org.apache.commons.math3.util.Combinations;
 
 public class Cell {
@@ -130,8 +134,20 @@ public class Cell {
 //    	return new Cell(neighbour_suid);
 //    }
     
+    
+    // wrapper on neighbour_with_rotation to just return the neighbour
     public Cell neighbour(String direction) {
-    	{
+    	Map<Cell, Integer> map = this.neighbour_with_rotation(direction);
+    	Optional<Cell> firstKey = map.keySet().stream().findFirst();
+    	if (firstKey.isPresent()) {
+    	    Cell key = firstKey.get();
+    	    return key;
+    	}
+		return null;
+    	
+    }
+       
+    public Map<Cell, Integer> neighbour_with_rotation(String direction) {
     	HashMap<String, HashMap<String, String>> an = AtomicNeighbours.get_an();
     	List<String> zero_cells = this.rhpp.zero_cells;
 //      an = self.atomic_neighbours()
@@ -234,14 +250,15 @@ public class Cell {
 //      or (self0 == an[zero_cells[0]]["right"] and neighbour0 == zero_cells[0])
 //  ):
 //      neighbour = self.rotate(neighbour_suid, 3)
-
+    	Integer rotation = 0;
     	if (
     			(suid_zero.equals(zero_cells.get(5)) && neighbour_zero.equals(an.get(suid_zero).get("left")))
     			|| (suid_zero.equals(an.get(zero_cells.get(5)).get("right")) && neighbour_zero.equals(zero_cells.get(5)))
     			|| (suid_zero.equals(zero_cells.get(0)) && neighbour_zero.equals(an.get(suid_zero).get("right")))
     			|| (suid_zero.equals(an.get(zero_cells.get(0)).get("left")) && neighbour_zero.equals(zero_cells.get(0)))
     			){
-    		neighbour_suid_str = rotate(neighbour_suid_str, 1);
+    		rotation = 1;
+//    		neighbour_suid_str = rotate(neighbour_suid_str, 1);
     		}
     	else if (
     			(suid_zero.equals(zero_cells.get(5)) && neighbour_zero.equals(an.get(suid_zero).get("down")))
@@ -249,7 +266,8 @@ public class Cell {
     			|| (suid_zero.equals(zero_cells.get(0)) && neighbour_zero.equals(an.get(suid_zero).get("up")))
     			|| (suid_zero.equals(an.get(zero_cells.get(0)).get("up")) && neighbour_zero.equals(zero_cells.get(0)))
     			){
-    		neighbour_suid_str = rotate(neighbour_suid_str, 2);
+    		rotation = 2;
+//    		neighbour_suid_str = rotate(neighbour_suid_str, 2);
     		}
     	else if (
     			(suid_zero.equals(zero_cells.get(5)) && neighbour_zero.equals(an.get(suid_zero).get("right")))
@@ -257,10 +275,13 @@ public class Cell {
     			|| (suid_zero.equals(zero_cells.get(0)) && neighbour_zero.equals(an.get(suid_zero).get("left")))
     			|| (suid_zero.equals(an.get(zero_cells.get(0)).get("right")) && neighbour_zero.equals(zero_cells.get(0)))
     			){
-    		neighbour_suid_str = rotate(neighbour_suid_str, 3);
+    		rotation = 3;
+//    		neighbour_suid_str = rotate(neighbour_suid_str, 3);
     		}
-		return new Cell(neighbour_suid_str);
-    	}
+		neighbour_suid_str = rotate(neighbour_suid_str, rotation);
+		HashMap<Cell, Integer> return_map = new HashMap<>();
+		return_map.put(new Cell(neighbour_suid_str), rotation);
+		return return_map;
     }
     
     private String rotate(String suid, Integer quarter_turns) {
@@ -275,11 +296,11 @@ public class Cell {
     	return String.join("", rotated);
     }
 
-    private String rotate_entry(String suid, Integer quarter_turns) {
+    private String rotate_entry(String suid_substring, Integer quarter_turns) {
 //        N = self.N
     	int N = this.rhpp.N;
 //        # Original matrix of subcell numbers as drawn in the docstring.
-    	HashMap<int[], Integer> A = this.child_order();
+    	HashMap<Integer, HashMap<Integer, Integer>> A = this.child_order();
 //        # Function (written as a dictionary) describing action of rotating A
 //        # one quarter turn anticlockwise.    	
 //        f = dict()
@@ -288,11 +309,13 @@ public class Cell {
 //            for j in range(N):
 //                n = A[(i, j)]
 //                f[n] = A[(j, N - 1 - i)]
-    	for (int i=0; i<=N; i++) {
-    		for (int j=0; j<=N; j++) {
-    			Integer n  = A.get(new int[]{i, j});
-    			Integer newVal = A.get(new int[] {j, N-1-i});
-    			f.put(n.toString(), newVal.toString());
+    	for (int i=0; i<N; i++) {
+    		for (int j=0; j<N; j++) {
+    			int[] int_index = new int[]{i, j};
+    			int[] int_new_index = new int[] {j, N-1-i};
+//    			Integer n  = A.get(int_index.toString());
+//    			Integer newVal = A.get(int_new_index.toString());
+//    			f.put(n.toString(), newVal.toString());
     		}
     	}
 //        # Level 0 cell names stay the same.
@@ -306,22 +329,22 @@ public class Cell {
 //        if quarter_turns == 1:
 //            return f[x]
     	if (quarter_turns.equals(1)) {
-    		return f.get(suid);
+    		return f.get(suid_substring);
     	}
 //        elif quarter_turns == 2:
 //            return f[f[x]]
     	if (quarter_turns.equals(2)) {
-    		return f.get(f.get(suid));
+    		return f.get(f.get(suid_substring));
     	}
 //        elif quarter_turns == 3:
 //            return f[f[f[x]]]
     	if (quarter_turns.equals(3)) {
-    		return f.get(f.get(f.get(suid)));
+    		return f.get(f.get(f.get(suid_substring)));
     	}
 //        else:
 //            return x
 		else {
-			return suid;
+			return suid_substring;
 		}
     }
     
@@ -333,42 +356,113 @@ public class Cell {
 //      # Handy to have both coordinates and order as dictionary keys.
 //      child_order[(row, col)] = order
 //  return child_order
-    public HashMap<int[], Integer> child_order()
+    // use nested hashmaps as having int array as key in java is not worth the complication
+    public HashMap<Integer, HashMap<Integer, Integer>> child_order()
     {
-    	Combinations combs = new Combinations(this.rhpp.N, 2);
-        HashMap<int[], Integer> child_order_map = new HashMap<>();
-        Iterator<int[]> iterator = combs.iterator();
-        while (iterator.hasNext()) {
-            final int[] combination = iterator.next();
-            int order = combination[0] * this.rhpp.N + combination[1];
-            child_order_map.put(combination, order);
-        }
-        return child_order_map;
+    	int N = this.rhpp.N;
+        HashMap<Integer, HashMap<Integer, Integer>> outer_map = new HashMap<>();
+    	for (Integer i=0; i<N; i++) {
+            HashMap<Integer, Integer> inner_map = new HashMap<>();
+    		for (Integer j=0; j<N; j++) {
+                Integer order = i * N + j;
+    			inner_map.put(j, order);
+    		}
+    		outer_map.put(i, inner_map);
+    	}
+        return outer_map;
+    }
+////    			int[] intarray = new int[]{i,j};
+////    	        System.out.println(Arrays.toString(intarray));
+//                outer_map.put(i, (order, order))
+////                System.out.println(order.toString());
+//                child_order_map.put(intarray.toString(), order);
+    
+    public CellCollection neighbours(Boolean...  include_diagonals_opt) {
+    	Boolean include_diagonals = include_diagonals_opt.length > 0 ? include_diagonals_opt[0] : true;
+		List<String> neighbours_suids = new ArrayList<String>();
+//	    ln, lr = self.neighbour("left", include_rotation=True)
+//	    rn, rr = self.neighbour("right", include_rotation=True)
+//	    un = self.neighbour("up")
+//	    dn = self.neighbour("down")
+    	Map<Cell, Integer> left = this.neighbour_with_rotation("left");
+    	Map<Cell, Integer> right = this.neighbour_with_rotation("right");
+    	neighbours_suids.add(this.neighbour("up").suid);
+    	neighbours_suids.add(this.neighbour("down").suid);
+    	neighbours_suids.add(this.neighbour("left").suid);
+    	neighbours_suids.add(this.neighbour("right").suid);
+    	if (include_diagonals && this.resolution > 0) {
+    		// left
+	        for (Map.Entry<Cell, Integer> iterleft : left.entrySet()) {
+	        	if (Stream.of(1,3).anyMatch(iterleft.getValue()::equals)) {
+	        		neighbours_suids.add(iterleft.getKey().neighbour("left").suid);
+	        		neighbours_suids.add(iterleft.getKey().neighbour("right").suid);
+	        	}
+	        	else {
+	        		neighbours_suids.add(iterleft.getKey().neighbour("up").suid);
+	        		neighbours_suids.add(iterleft.getKey().neighbour("down").suid);
+	        		}
+	        	};
+	        }
+	        // right
+	        for (Map.Entry<Cell, Integer> iterright: left.entrySet()) {
+	        	if (Stream.of(1,3).anyMatch(iterright.getValue()::equals)) {
+	        		neighbours_suids.add(iterright.getKey().neighbour("left").suid);
+	        		neighbours_suids.add(iterright.getKey().neighbour("right").suid);
+	        	}
+	        	else {
+	        		neighbours_suids.add(iterright.getKey().neighbour("up").suid);
+	        		neighbours_suids.add(iterright.getKey().neighbour("down").suid);
+	        	}
+	        }
+	        return new CellCollection(String.join(" ", neighbours_suids));
+    }
+
+//    def neighbours(self, include_diagonals=True) -> CellCollection:
+//        """
+//        Returns the neighbouring cells of a given cell
+//        :param include_diagonals: Includes cells that are diagonal neighbours
+//        :return: a CellCollection of neighbouring cells
+//        """
+//    neighbours = []
+//    ln, lr = self.neighbour("left", include_rotation=True)
+//    rn, rr = self.neighbour("right", include_rotation=True)
+//    un = self.neighbour("up")
+//    dn = self.neighbour("down")
+//    neighbours.extend([ln, rn, un, dn])
+//    if (
+//        include_diagonals and self.resolution > 0
+//    ):  # no diagonals at resolution 0 as it's a cube
+//        for cell, rotation in zip([ln, rn], [lr, rr]):
+//            if rotation in [1, 3]:
+//                neighbours.append(cell.neighbour("left"))
+//                neighbours.append(cell.neighbour("right"))
+//            else:
+//                neighbours.append(cell.neighbour("up"))
+//                neighbours.append(cell.neighbour("down"))
+//    return CellCollection(neighbours)
+    
+    // Cell neighbours		
+    public CellCollection neighbours_incorrect(Boolean...  include_diagonals_opt) {
+		Boolean include_diagonals = include_diagonals_opt.length > 0 ? include_diagonals_opt[0] : true;
+    	HashMap<String, HashMap<String, String>> an = AtomicNeighbours.get_an();
+    	String starting_digits = this.suid.substring(0, this.suid.length()-1);
+    	String last_digit = this.suid.substring(this.suid.length()-1, this.suid.length());
+		List<String> neighbourSuffixes = new ArrayList<String>();
+		neighbourSuffixes.add(an.get(last_digit).get("up"));
+		neighbourSuffixes.add(an.get(last_digit).get("down"));
+		String left = an.get(last_digit).get("left");
+		String right = an.get(last_digit).get("right");
+		neighbourSuffixes.add(left);
+		neighbourSuffixes.add(right);
+		if (include_diagonals && this.resolution > 0) {
+			neighbourSuffixes.add(an.get(left).get("up"));
+			neighbourSuffixes.add(an.get(left).get("down"));
+			neighbourSuffixes.add(an.get(right).get("up"));
+			neighbourSuffixes.add(an.get(right).get("down"));
+		}
+		List<String> neighbourSuids = new ArrayList<String>();
+		for (String suffix: neighbourSuffixes) 
+			{neighbourSuids.add(new String(starting_digits + suffix));}
+    	return new CellCollection(String.join(" ", neighbourSuids));
     }
 }
-    
-//    // Cell neighbours		
-//    public CellCollection neighbours(Boolean...  include_diagonals_opt) {
-//		Boolean include_diagonals = include_diagonals_opt.length > 0 ? include_diagonals_opt[0] : true;
-//    	HashMap<String, HashMap<String, String>> an = AtomicNeighbours.get_an();
-//    	String starting_digits = this.suid.substring(0, this.suid.length()-1);
-//    	String last_digit = this.suid.substring(this.suid.length()-1, this.suid.length());
-//		List<String> neighbourSuffixes = new ArrayList<String>();
-//		neighbourSuffixes.add(an.get(last_digit).get("up"));
-//		neighbourSuffixes.add(an.get(last_digit).get("down"));
-//		String left = an.get(last_digit).get("left");
-//		String right = an.get(last_digit).get("right");
-//		neighbourSuffixes.add(left);
-//		neighbourSuffixes.add(right);
-//		if (include_diagonals && this.resolution > 0) {
-//			neighbourSuffixes.add(an.get(left).get("up"));
-//			neighbourSuffixes.add(an.get(left).get("down"));
-//			neighbourSuffixes.add(an.get(right).get("up"));
-//			neighbourSuffixes.add(an.get(right).get("down"));
-//		}
-//		List<String> neighbourSuids = new ArrayList<String>();
-//		for (String suffix: neighbourSuffixes) 
-//			{neighbourSuids.add(new String(starting_digits + suffix));}
-//    	return new CellCollection(String.join(" ", neighbourSuids));
-//    }
-//}

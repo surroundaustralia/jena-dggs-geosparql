@@ -12,10 +12,10 @@ import main.dggs.cell.objects.CellCollection;
 
 public class CellTest {
 
-	@Test
-	void test_child_order() {
-		HashMap<int[], Integer> test = new Cell("R1").child_order();
-	}
+//	@Test
+//	void test_child_order() {
+//		HashMap<int[], Integer> test = new Cell("R1").child_order();
+//	}
 	
 	@Test
 	void testValidZero() {
@@ -174,28 +174,28 @@ public class CellTest {
 		assertEquals(neighbour, cell2);
 	}
 	
-//	@Test
-//	void testNeighboursN() {
-//		Cell cell1 = new Cell("N");
-//		CellCollection neighbours = cell1.neighbours();
-//		CellCollection cell2 = new CellCollection("O P Q R");
-//		assertEquals(neighbours, cell2);
-//	}
-//	
-//	@Test
-//	void testNeighboursP() {
-//		Cell cell1 = new Cell("P");
-//		CellCollection neighbours = cell1.neighbours();
-//		CellCollection cell2 = new CellCollection("N S O Q");
-//		assertEquals(neighbours, cell2);
-//	}
-//	
-//	@Test
-//	void testNeighboursN8() {
-//		Cell cell1 = new Cell("N8");
-//		CellCollection neighbours = cell1.neighbours();
-//		CellCollection cell2 = new CellCollection("N5 N4 N7 O2 P0");
-//		assertEquals(neighbours, cell2);
-//	}
+	@Test
+	void testNeighboursN() {
+		Cell cell1 = new Cell("N");
+		CellCollection neighbours = cell1.neighbours();
+		CellCollection cell2 = new CellCollection("O P Q R");
+		assertEquals(neighbours, cell2);
+	}
+	
+	@Test
+	void testNeighboursP() {
+		Cell cell1 = new Cell("P");
+		CellCollection neighbours = cell1.neighbours();
+		CellCollection cell2 = new CellCollection("N S O Q");
+		assertEquals(neighbours, cell2);
+	}
+	
+	@Test
+	void testNeighboursN8() {
+		Cell cell1 = new Cell("N8");
+		CellCollection neighbours = cell1.neighbours();
+		CellCollection cell2 = new CellCollection("N5 N4 N7 O2 P0");
+		assertEquals(neighbours, cell2);
+	}
 	
 }

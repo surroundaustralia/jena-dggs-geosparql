@@ -26,5 +26,23 @@
 			<attribute name="test" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="/home/david/.m2/repository/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4.jar" sourcepath="/home/david/.m2/repository/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4-sources.jar">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="maven.groupId" value="org.apache.commons"/>
+			<attribute name="maven.artifactId" value="commons-collections4"/>
+			<attribute name="maven.version" value="4.4"/>
+			<attribute name="maven.scope" value="compile"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/david/.m2/repository/org/apache/lucene/lucene-core/8.8.0/lucene-core-8.8.0.jar" sourcepath="/home/david/.m2/repository/org/apache/lucene/lucene-core/8.8.0/lucene-core-8.8.0-sources.jar">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="maven.groupId" value="org.apache.lucene"/>
+			<attribute name="maven.artifactId" value="lucene-core"/>
+			<attribute name="maven.version" value="8.8.0"/>
+			<attribute name="maven.scope" value="compile"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
