@@ -194,7 +194,7 @@ public class CellTest {
 	void testNeighboursN8() {
 		Cell cell1 = new Cell("N8");
 		CellCollection neighbours = cell1.neighbours();
-		CellCollection cell2 = new CellCollection("N5 N4 N7 O2 P0");
+		CellCollection cell2 = new CellCollection("N5 N4 N7 O1 O2 P0 P1");
 		assertEquals(neighbours, cell2);
 	}
 	

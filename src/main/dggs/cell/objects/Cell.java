@@ -290,7 +290,8 @@ public class Cell {
 //            Used in neighbour().
 //            return [self.rotate_entry(x, quarter_turns) for x in suid]
     	List<String> rotated = new ArrayList<String>();
-    	for (int i=0; i<=suid.length(); i++) {
+    	for (int i=0; i<suid.length(); i++) {
+//    		System.out.println(i);
     		rotated.add(rotate_entry(suid.substring(i,i+1), quarter_turns));
     	}
     	return String.join("", rotated);
@@ -311,11 +312,12 @@ public class Cell {
 //                f[n] = A[(j, N - 1 - i)]
     	for (int i=0; i<N; i++) {
     		for (int j=0; j<N; j++) {
-    			int[] int_index = new int[]{i, j};
-    			int[] int_new_index = new int[] {j, N-1-i};
-//    			Integer n  = A.get(int_index.toString());
+//    			int[] int_index = new int[]{i, j};
+//    			int[] int_new_index = new int[]{j, N-1-i};
+    			Integer n  = A.get(i).get(j);
+    			Integer newVal = A.get(j).get(N-1-i);
 //    			Integer newVal = A.get(int_new_index.toString());
-//    			f.put(n.toString(), newVal.toString());
+    			f.put(n.toString(), newVal.toString());
     		}
     	}
 //        # Level 0 cell names stay the same.
@@ -404,7 +406,7 @@ public class Cell {
 	        	};
 	        }
 	        // right
-	        for (Map.Entry<Cell, Integer> iterright: left.entrySet()) {
+	        for (Map.Entry<Cell, Integer> iterright: right.entrySet()) {
 	        	if (Stream.of(1,3).anyMatch(iterright.getValue()::equals)) {
 	        		neighbours_suids.add(iterright.getKey().neighbour("left").suid);
 	        		neighbours_suids.add(iterright.getKey().neighbour("right").suid);
