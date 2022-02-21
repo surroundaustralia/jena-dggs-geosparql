@@ -135,7 +135,7 @@ public class CellTest {
 	void testChildrenPositive() {
 		Cell cell1 = new Cell("R1");
 		CellCollection cell2 = new CellCollection("R10 R11 R12 R13 R14 R15 R16 R17 R18", false);
-		assertTrue(cell1.children().equals(cell2));
+		assertTrue(cell1.children(3).equals(cell2));
 	}
 	
 	// cell overlap cell collection positive
@@ -195,6 +195,14 @@ public class CellTest {
 		Cell cell1 = new Cell("N8");
 		CellCollection neighbours = cell1.neighbours();
 		CellCollection cell2 = new CellCollection("N5 N4 N7 O1 O2 P0 P1");
+		assertEquals(neighbours, cell2);
+	}
+	
+	@Test
+	void testNeighboursP0() {
+		Cell cell1 = new Cell("P0");
+		CellCollection neighbours = cell1.neighbours();
+		CellCollection cell2 = new CellCollection("N5 N8 O2 O5 P1 P3 P4");
 		assertEquals(neighbours, cell2);
 	}
 	

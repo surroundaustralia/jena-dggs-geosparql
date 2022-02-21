@@ -10,10 +10,12 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 
 import org.apache.commons.collections4.iterators.PermutationIterator;
 import org.apache.commons.math3.util.Combinations;
+import org.paukov.combinatorics3.Generator;
 
 public class Cell {
 	
@@ -61,8 +63,26 @@ public class Cell {
 		}
 	}
 	
+	
 	// Cell children
-	public CellCollection children() {
+	public CellCollection children(Integer... resolution_opt) {
+		// resolution_delta is specified resolution - cell's resolution, else 1 less than cell's resolution 
+		Integer resolution_delta = resolution_opt.length > 0 ? resolution_opt[0] - this.resolution: 1;
+		int n_children = (int) Math.pow(this.rhpp.N, 2*resolution_delta);
+		String[] children_suffix = new String[n_children];
+	   Generator.permutation(this.rhpp.suffixes)
+	        .withRepetitions(resolution_delta)
+	        .stream()
+	        .forEach(System.out::println);
+//		for (int n=1; n<=resolution_delta; n++) {
+//			children_suffix
+//		}
+//    	IntStream.range(0, n_children).forEachOrdered(i -> {
+//    		children_suffix[i] = i;
+//    		down_border[i] = (N - 1) * N + i;
+//    		left_border[i] = i * N;
+//    		right_border[i] = (i + 1) * N - 1;
+//    	});
 		String[] suffixes = {"0","1","2","3","4","5","6","7","8"};
 		List<String> suids = new ArrayList<String>();
 		for (String suffix: suffixes) 
@@ -161,10 +181,10 @@ public class Cell {
 //      down_border = set([(N - 1) * N + i for i in range(N)])
 //      left_border = set([i * N for i in range(N)])
 //      right_border = set([(i + 1) * N - 1 for i in range(N)])
-    	int[] up_border = new int[3];
-    	int[] down_border = new int[3];
-    	int[] left_border = new int[3];
-    	int[] right_border = new int[3];
+    	int[] up_border = new int[N];
+    	int[] down_border = new int[N];
+    	int[] left_border = new int[N];
+    	int[] right_border = new int[N];
     	IntStream.range(0, N).forEachOrdered(i -> {
     		up_border[i] = i;
     		down_border[i] = (N - 1) * N + i;
@@ -380,6 +400,7 @@ public class Cell {
 //                child_order_map.put(intarray.toString(), order);
     
     public CellCollection neighbours(Boolean...  include_diagonals_opt) {
+    	    	
     	Boolean include_diagonals = include_diagonals_opt.length > 0 ? include_diagonals_opt[0] : true;
 		List<String> neighbours_suids = new ArrayList<String>();
 //	    ln, lr = self.neighbour("left", include_rotation=True)
@@ -392,6 +413,18 @@ public class Cell {
     	neighbours_suids.add(this.neighbour("down").suid);
     	neighbours_suids.add(this.neighbour("left").suid);
     	neighbours_suids.add(this.neighbour("right").suid);
+		//  neighbours.extend([ln, rn, un, dn])
+		//  if (
+		//      include_diagonals and self.resolution > 0
+		//  ):  # no diagonals at resolution 0 as it's a cube
+		//      for cell, rotation in zip([ln, rn], [lr, rr]):
+		//          if rotation in [1, 3]:
+		//              neighbours.append(cell.neighbour("left"))
+		//              neighbours.append(cell.neighbour("right"))
+		//          else:
+		//              neighbours.append(cell.neighbour("up"))
+		//              neighbours.append(cell.neighbour("down"))
+		//  return CellCollection(neighbours)
     	if (include_diagonals && this.resolution > 0) {
     		// left
 	        for (Map.Entry<Cell, Integer> iterleft : left.entrySet()) {
@@ -419,52 +452,6 @@ public class Cell {
 	        return new CellCollection(String.join(" ", neighbours_suids));
     }
 
-//    def neighbours(self, include_diagonals=True) -> CellCollection:
-//        """
-//        Returns the neighbouring cells of a given cell
-//        :param include_diagonals: Includes cells that are diagonal neighbours
-//        :return: a CellCollection of neighbouring cells
-//        """
-//    neighbours = []
-//    ln, lr = self.neighbour("left", include_rotation=True)
-//    rn, rr = self.neighbour("right", include_rotation=True)
-//    un = self.neighbour("up")
-//    dn = self.neighbour("down")
-//    neighbours.extend([ln, rn, un, dn])
-//    if (
-//        include_diagonals and self.resolution > 0
-//    ):  # no diagonals at resolution 0 as it's a cube
-//        for cell, rotation in zip([ln, rn], [lr, rr]):
-//            if rotation in [1, 3]:
-//                neighbours.append(cell.neighbour("left"))
-//                neighbours.append(cell.neighbour("right"))
-//            else:
-//                neighbours.append(cell.neighbour("up"))
-//                neighbours.append(cell.neighbour("down"))
-//    return CellCollection(neighbours)
+
     
-    // Cell neighbours		
-    public CellCollection neighbours_incorrect(Boolean...  include_diagonals_opt) {
-		Boolean include_diagonals = include_diagonals_opt.length > 0 ? include_diagonals_opt[0] : true;
-    	HashMap<String, HashMap<String, String>> an = AtomicNeighbours.get_an();
-    	String starting_digits = this.suid.substring(0, this.suid.length()-1);
-    	String last_digit = this.suid.substring(this.suid.length()-1, this.suid.length());
-		List<String> neighbourSuffixes = new ArrayList<String>();
-		neighbourSuffixes.add(an.get(last_digit).get("up"));
-		neighbourSuffixes.add(an.get(last_digit).get("down"));
-		String left = an.get(last_digit).get("left");
-		String right = an.get(last_digit).get("right");
-		neighbourSuffixes.add(left);
-		neighbourSuffixes.add(right);
-		if (include_diagonals && this.resolution > 0) {
-			neighbourSuffixes.add(an.get(left).get("up"));
-			neighbourSuffixes.add(an.get(left).get("down"));
-			neighbourSuffixes.add(an.get(right).get("up"));
-			neighbourSuffixes.add(an.get(right).get("down"));
-		}
-		List<String> neighbourSuids = new ArrayList<String>();
-		for (String suffix: neighbourSuffixes) 
-			{neighbourSuids.add(new String(starting_digits + suffix));}
-    	return new CellCollection(String.join(" ", neighbourSuids));
-    }
 }

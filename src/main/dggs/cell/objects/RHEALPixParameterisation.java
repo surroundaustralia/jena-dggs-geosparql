@@ -1,7 +1,9 @@
 package main.dggs.cell.objects;
 import java.util.List;
+import java.util.stream.IntStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 public class RHEALPixParameterisation {
 	public String name;
@@ -9,6 +11,7 @@ public class RHEALPixParameterisation {
 	public Integer north_square;
 	public Integer south_square;
 	public List<String> zero_cells;
+	public List<String> suffixes;
 	
 	public RHEALPixParameterisation(String name) {
 		if (name == "auspix") {
@@ -22,7 +25,9 @@ public class RHEALPixParameterisation {
 			this.zero_cells.add("P");
 			this.zero_cells.add("Q");
 			this.zero_cells.add("R");
-			this.zero_cells.add("S"); 			
+			this.zero_cells.add("S");
+			IntStream raw_suffixes = IntStream.range(0, (int) Math.pow(this.N, 2));
+			this.suffixes = raw_suffixes.boxed().map(Object::toString).collect(Collectors.toList());
 		}
 	}
 //	public void instantiate(HashMap parameterisation) {

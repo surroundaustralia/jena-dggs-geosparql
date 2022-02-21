@@ -197,4 +197,27 @@ public class CellCollection {
 		CellCollection retainCC = new CellCollection(retain_suids);
 		return retainCC;
 	}
+	
+	// CellCollection neighbours
+	public CellCollection neighbours(Integer... resolution_opt) {
+		// default resolution to max resolution of the input collection
+		Integer resolution = resolution_opt.length > 0 ? resolution_opt[0] : this.max_resolution;
+		if (resolution < this.max_resolution) {
+			throw new IllegalArgumentException("Resolution must be at or greater than the "
+					+ "CellCollection's max resolution in order to provide a sensible set "
+					+ "of neighbouring cells");
+		}
+		List<String> neighbours_suid_list = new ArrayList<String>();
+		for (Cell cell : this.cells) {
+			if (cell.resolution < resolution) {
+				// use border function
+			}
+			
+			
+			CellCollection thiscellneighbours = cell.neighbours();
+			neighbours_suid_list.add(thiscellneighbours.suids);
+		}
+		String neighbours_suid_string = String.join(" ", neighbours_suid_list);
+		return new CellCollection(neighbours_suid_string);
+	}
 }
