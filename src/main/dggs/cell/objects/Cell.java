@@ -2,19 +2,14 @@ package main.dggs.cell.objects;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 
-import org.apache.commons.collections4.iterators.PermutationIterator;
-import org.apache.commons.math3.util.Combinations;
 import org.paukov.combinatorics3.Generator;
 
 public class Cell {
