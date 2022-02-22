@@ -135,7 +135,7 @@ public class CellTest {
 	void testChildrenPositive() {
 		Cell cell1 = new Cell("R1");
 		CellCollection cell2 = new CellCollection("R10 R11 R12 R13 R14 R15 R16 R17 R18", false);
-		assertTrue(cell1.children(3).equals(cell2));
+		assertTrue(cell1.children().equals(cell2));
 	}
 	
 	// cell overlap cell collection positive
