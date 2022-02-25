@@ -148,7 +148,7 @@ public class CellCollectionTest {
 	@Test
 	void testChildren() {
 		CellCollection cells1 = new CellCollection("R P1").children();
-		CellCollection expectedCells1Children = new CellCollection("R0 R1 R2 R3 R4 R5 R6 R7 R8 P10 P11 P12 P13 P14 P15 P16 P17 P18");
+		CellCollection expectedCells1Children = new CellCollection("P1 R0 R1 R2 R3 R4 R5 R6 R7 R8", false);
 		assertEquals(cells1, expectedCells1Children);
 	}
 	
@@ -164,5 +164,13 @@ public class CellCollectionTest {
 	void testMinRes() {
 		CellCollection cells1 = new CellCollection("R P1 R23 R345 Q2345");
 		assert(cells1.min_resolution == 0);
+	}
+	
+	// cell collection min resolution
+	@Test
+	void testNeighbours() {
+		CellCollection cells1 = new CellCollection("R4 R51").neighbours();
+		CellCollection expectedNeighbours = new CellCollection("R08 R16 R17 R18 R26 R27 R28 R32 R35 R38 R50 R52 R53 R54 R55 R56 R62 R70 R71 R72 R80");
+		assert(cells1.equals(expectedNeighbours));
 	}
 }

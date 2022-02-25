@@ -2,10 +2,10 @@ package main.dggs.cell.objects;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,11 +24,11 @@ public class Cell {
 		this.suid = suid;
 		if (!this.rhpp.zero_cells.contains(suid.substring(0,1))) {
 //		if (!Stream.of(this.rhpp.zero_cells).anyMatch(suid::startsWith)) {
-			throw new IllegalArgumentException("Cell suids must start with one of N, O, P, Q, R, or S");
+			throw new IllegalArgumentException("Cell suids must start with one of the zero cells");
 		}
 		if (suid.length() > 1) {
-			if (!Stream.of("0","1","2","3","4","5","6","7","8").anyMatch(suid.substring(1)::startsWith)) {
-				throw new IllegalArgumentException("Cell suids must only contain characters 0..8 after the first character");
+			if (!this.rhpp.suffixes.stream().anyMatch(suid.substring(1)::startsWith)) {
+				throw new IllegalArgumentException("Cell suids must only contain integers in the range {TODO} after the first integer");
 			}
 		}
 		this.resolution = suid.length()-1;
@@ -49,7 +49,7 @@ public class Cell {
 	
 	// Cell parent
 	public Cell parent() {
-		if (this.resolution > 1) {
+		if (this.resolution >= 1) {
 			Cell parent_cell = new Cell(this.suid.substring(0, this.suid.length()-1));
 			return parent_cell;
 		}
@@ -58,32 +58,17 @@ public class Cell {
 		}
 	}
 	
-	
 	// Cell children
 	public CellCollection children(Integer... resolution_opt) {
 		// resolution_delta is specified resolution - cell's resolution, else 1 less than cell's resolution 
 		Integer resolution_delta = resolution_opt.length > 0 ? resolution_opt[0] - this.resolution: 1;
-		int n_children = (int) Math.pow(this.rhpp.N, 2*resolution_delta);
-		String[] children_suffix = new String[n_children];
-	   Generator.permutation(this.rhpp.suffixes)
+		List<String> children_suids = new ArrayList<String>();
+		Generator.permutation(this.rhpp.suffixes)
 	        .withRepetitions(resolution_delta)
 	        .stream()
-	        .forEach(System.out::println);
-//		for (int n=1; n<=resolution_delta; n++) {
-//			children_suffix
-//		}
-//    	IntStream.range(0, n_children).forEachOrdered(i -> {
-//    		children_suffix[i] = i;
-//    		down_border[i] = (N - 1) * N + i;
-//    		left_border[i] = i * N;
-//    		right_border[i] = (i + 1) * N - 1;
-//    	});
-		String[] suffixes = {"0","1","2","3","4","5","6","7","8"};
-		List<String> suids = new ArrayList<String>();
-		for (String suffix: suffixes) 
-			{suids.add(new String(this.suid + suffix));}
-		String joined_suids = String.join(" ", suids);
-		return new CellCollection(joined_suids, false);
+	        .forEach(perm -> children_suids.add(this.suid + String.join("", perm)));
+		String children_suids_string = String.join(" ", children_suids);
+		return new CellCollection(children_suids_string, false);
 	}
 	
 	// Equals must override the generic Java equals function (then check for type Cell),
@@ -137,18 +122,7 @@ public class Cell {
 	    		{return true;}
 	    	}
     	return false;
-    }  
-    
-    // Cell neighbour
-//    public Cell neighbour(String direction) {
-//    	HashMap<String, HashMap<String, String>> an = AtomicNeighbours.get_an();
-//    	String starting_digits = this.suid.substring(0, this.suid.length()-1);
-//    	String last_digit = this.suid.substring(this.suid.length()-1, this.suid.length());
-//    	String neighbour = an.get(last_digit).get(direction);
-//    	String neighbour_suid = starting_digits + neighbour;
-//    	return new Cell(neighbour_suid);
-//    }
-    
+    }     
     
     // wrapper on neighbour_with_rotation to just return the neighbour
     public Cell neighbour(String direction) {
@@ -167,46 +141,9 @@ public class Cell {
     	List<String> zero_cells = this.rhpp.zero_cells;
 //      an = self.atomic_neighbours()
 //      suid = self.suids
-//      N = self.N
-    	int N = this.rhpp.N;
 //      zero_cells = parametrisations[self.crs]["zero_cells"]
 //      neighbour_suid = []
     	List<String> neighbour_suid = new ArrayList<String>();
-//      up_border = set(range(N))
-//      down_border = set([(N - 1) * N + i for i in range(N)])
-//      left_border = set([i * N for i in range(N)])
-//      right_border = set([(i + 1) * N - 1 for i in range(N)])
-    	int[] up_border = new int[N];
-    	int[] down_border = new int[N];
-    	int[] left_border = new int[N];
-    	int[] right_border = new int[N];
-    	IntStream.range(0, N).forEachOrdered(i -> {
-    		up_border[i] = i;
-    		down_border[i] = (N - 1) * N + i;
-    		left_border[i] = i * N;
-    		right_border[i] = (i + 1) * N - 1;
-    	});
-        String[] up_border_string = Arrays.stream(up_border).mapToObj(String::valueOf).toArray(String[]::new);
-        String[] down_border_string = Arrays.stream(down_border).mapToObj(String::valueOf).toArray(String[]::new);
-    	String[] left_border_string = Arrays.stream(left_border).mapToObj(String::valueOf).toArray(String[]::new);
-    	String[] right_border_string = Arrays.stream(right_border).mapToObj(String::valueOf).toArray(String[]::new);  	
-//      border = {
-//          "left": left_border,
-//          "right": right_border,
-//          "up": up_border,
-//          "down": down_border,
-//      }
-      	HashMap<String,int[]> border = new HashMap<String, int[]>();
-      	border.put("left", left_border);
-      	border.put("right", right_border);
-      	border.put("up", up_border);
-      	border.put("down", down_border);
-      	
-      	HashMap<String,String[]> border_string = new HashMap<String, String[]>();
-      	border_string.put("left", left_border_string);
-      	border_string.put("right", right_border_string);
-      	border_string.put("up", up_border_string);
-      	border_string.put("down", down_border_string);
 //      crossed_all_borders = False
     	boolean crossed_all_borders = false;
 //      # Scan from the back to the front of suid.
@@ -225,7 +162,7 @@ public class Cell {
     		}
     		else {
     			neighbour_suid.add(an.get(n).get(direction));
-    			boolean contains = Arrays.stream(border_string.get(direction)).anyMatch(n::equals);
+    			boolean contains = Arrays.stream(this.rhpp.borders.get(direction)).anyMatch(n::equals);
     			if (!contains) {
     				crossed_all_borders = true;
     			}
@@ -446,7 +383,44 @@ public class Cell {
 	        }
 	        return new CellCollection(String.join(" ", neighbours_suids));
     }
-
-
     
+//  def border(self, resolution=None) -> Union[Cell, CellCollection]:
+//  """
+//  The set of cells that form the border of this cell, at a resolution at or higher than the cell's resolution.
+//  NB a cells border *at* it's resolution *is* that cell
+//  :return: Cell (for a border at the Cell's resolution) or CellCollection otherwise
+//  """
+//  if resolution == None:
+//      return self
+//  else:
+//      resolution_delta = resolution - self.resolution
+//      left_edge = product([0, 3, 6], repeat=resolution_delta)
+//      right_edge = product([2, 5, 8], repeat=resolution_delta)
+//      top_edge = product([0, 1, 2], repeat=resolution_delta)
+//      bottom_edge = product([6, 7, 8], repeat=resolution_delta)
+//      all_edges = list(
+//          set(
+//              chain.from_iterable(
+//                  zip(left_edge, right_edge, top_edge, bottom_edge)
+//              )
+//          )
+//      )
+//  all_cells = CellCollection(
+//      [self.__str__() + "".join([str(j) for j in i]) for i in all_edges]
+//  )
+//  return all_cells
+    public CellCollection border(Integer... resolution_opt) {
+		// resolution_delta is specified resolution - cell's resolution, else 1 less than cell's resolution 
+		Integer resolution_delta = resolution_opt.length > 0 ? resolution_opt[0] - this.resolution: 0;
+		List<String> border_suids = new ArrayList<String>();
+		for (Map.Entry<String, String[]> iter: this.rhpp.borders.entrySet()) {
+			Generator.permutation(iter.getValue())
+	        .withRepetitions(resolution_delta)
+	        .stream()
+	        .forEach(perm -> border_suids.add(this.suid + String.join("", perm)));	
+		}
+		List<String> border_deduped = new ArrayList<>(new HashSet<>(border_suids));
+        return new CellCollection(String.join(" ", border_deduped));
+    }
+ 
 }

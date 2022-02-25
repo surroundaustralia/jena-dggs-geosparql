@@ -1,5 +1,6 @@
 package main.dggs.simpleFeature;
 
+
 import main.dggs.cell.objects.CellCollection;
 
 public class RHEALSFTouches {
@@ -17,10 +18,20 @@ public class RHEALSFTouches {
 		// find the max resolution among the two cell collections
 		int max_res = Math.max(cc1.max_resolution, cc2.max_resolution);
 		// 
+		CellCollection smaller_cc_neighbours = new CellCollection();
+		CellCollection larger_cc_children = new CellCollection();
 		if (cc1.suids.length() < cc2.suids.length()) {
-			CellCollection smaller_cc_neighbours = new CellCollection(cc1.neighbours(max_res));
-			
+			smaller_cc_neighbours = smaller_cc_neighbours.add(cc1.neighbours(max_res));
+			larger_cc_children = larger_cc_children.add(cc2.children(max_res));
 		}
+		else {
+			smaller_cc_neighbours = smaller_cc_neighbours.add(cc2.neighbours(max_res));
+			larger_cc_children = larger_cc_children.add(cc1.children(max_res));		
+		}
+		if (smaller_cc_neighbours.overlaps(larger_cc_children)) {
+			return true;
+		}
+
 		return false;
 	}
 }

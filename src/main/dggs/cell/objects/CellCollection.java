@@ -13,12 +13,15 @@ public class CellCollection {
 
 	public Cell[] cells;
 	public String suids;
+//	public List<String> suid_list;
 	public Integer max_resolution;
 	public Integer min_resolution;
+	public Boolean compressed;
+	public CellCollection neighbours_cc;
 
 	public CellCollection(String suids, Boolean... compress_opt) {
 		// default compress to true
-		Boolean compress = compress_opt.length > 0 ? compress_opt[0] : true;
+		this.compressed = compress_opt.length > 0 ? compress_opt[0] : true;
 		
 		if (suids.isEmpty()) {
 			this.cells = null;
@@ -56,10 +59,10 @@ public class CellCollection {
 			this.cells = cellList.toArray(new Cell[cellList.size()]);
 
 			// compress
-			if (compress) {
+			if (this.compressed) {
 				List<Cell> cellListWithoutZeroCells = new ArrayList<Cell>();
 				for (Cell c : cellList) {
-					if (c.resolution > 1) {
+					if (c.resolution > 0) {
 						cellListWithoutZeroCells.add(c);
 					} 
 				}
@@ -78,7 +81,7 @@ public class CellCollection {
 			Arrays.sort(this.cells, (a, b) -> a.suid.compareTo(b.suid));
 
 			// regenerate suids based on cells
-			final String[] sarray = Arrays.stream(this.cells).map(Object::toString).toArray(String[]::new);
+			String[] sarray = Arrays.stream(this.cells).map(Object::toString).toArray(String[]::new);
 			this.suids = String.join(" ", sarray);
 			
 			// set min and max resolution
@@ -88,6 +91,7 @@ public class CellCollection {
 			}
 			this.min_resolution = Collections.min(resolutions);
 			this.max_resolution = Collections.max(resolutions);
+//			this.suid_list = Arrays.asList(sarray);
 		}
 	}
 
@@ -95,7 +99,7 @@ public class CellCollection {
 	// overloading for no input - not sure if used
 	public CellCollection() {
 		this.cells = null;
-		this.suids = null;
+		this.suids = "";
 		this.min_resolution = null;
 		this.max_resolution = null;
 	}
@@ -113,6 +117,7 @@ public class CellCollection {
         }
 
         final CellCollection other = (CellCollection) obj;
+
         if ((this.suids == null) ? (other.suids != null) : !this.suids.equals(other.suids)) {
             return false;
         }
@@ -134,10 +139,11 @@ public class CellCollection {
 	}
 	
 	// CellCollection Children
-	public CellCollection children() {
+	public CellCollection children(Integer... resolution_opt) {
+		Integer resolution = resolution_opt.length > 0 ? resolution_opt[0] : this.max_resolution + 1;
 		List<String> childrenList = new ArrayList<String>();
 		for (Cell cell : this.cells) {
-			CellCollection thiscellchildren = cell.children();
+			CellCollection thiscellchildren = cell.children(resolution);
 			childrenList.add(thiscellchildren.suids);
 		}
 		String children_suid_string = String.join(" ", childrenList);
@@ -198,26 +204,33 @@ public class CellCollection {
 		return retainCC;
 	}
 	
-	// CellCollection neighbours
 	public CellCollection neighbours(Integer... resolution_opt) {
 		// default resolution to max resolution of the input collection
+//		CellCollection neighbours_cc = new CellCollection();
+		List<String> neighboursList = new ArrayList<String>();
 		Integer resolution = resolution_opt.length > 0 ? resolution_opt[0] : this.max_resolution;
 		if (resolution < this.max_resolution) {
 			throw new IllegalArgumentException("Resolution must be at or greater than the "
 					+ "CellCollection's max resolution in order to provide a sensible set "
 					+ "of neighbouring cells");
 		}
-		List<String> neighbours_suid_list = new ArrayList<String>();
-		for (Cell cell : this.cells) {
+		neighbours_inner(this, neighboursList, resolution);
+		String neighbours_string = String.join(" ", neighboursList);
+		CellCollection all_neighbours = new CellCollection(neighbours_string);
+		return all_neighbours.subtract(this);
+	}
+
+	// CellCollection neighbours
+	//TODO should be able to update to not use a list string, just use all_neighbours directly
+	private void neighbours_inner(CellCollection cc, List<String> neighboursList, Integer resolution) {
+		for (Cell cell : cc.cells) {
 			if (cell.resolution < resolution) {
-				// use border function
+				neighbours_inner(cell.border(resolution), neighboursList, resolution);
+//				neighbours_list.add(cell.border(resolution).neighbours_inner(new CellCollection(cell.suid), resolution));
 			}
-			
-			
-			CellCollection thiscellneighbours = cell.neighbours();
-			neighbours_suid_list.add(thiscellneighbours.suids);
+			else {
+				neighboursList.add(cell.neighbours().suids);
+			}
 		}
-		String neighbours_suid_string = String.join(" ", neighbours_suid_list);
-		return new CellCollection(neighbours_suid_string);
 	}
 }
