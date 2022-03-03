@@ -8,8 +8,9 @@ public class RHEALSFContains {
 			return false;
 		}
 		else {
-			String together = String.join(cells1, cells2);
-			CellCollection testcc = new CellCollection(together);
+			CellCollection cc1 = new CellCollection(cells1);
+			CellCollection cc2 = new CellCollection(cells2);
+			CellCollection testcc = cc1.add(cc2);
 			if (testcc.equals(new CellCollection(cells1))) {
 				return true;
 			}

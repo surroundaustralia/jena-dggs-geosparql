@@ -23,7 +23,6 @@ public class Cell {
 		// Validate the suid input
 		this.suid = suid;
 		if (!this.rhpp.zero_cells.contains(suid.substring(0,1))) {
-//		if (!Stream.of(this.rhpp.zero_cells).anyMatch(suid::startsWith)) {
 			throw new IllegalArgumentException("Cell suids must start with one of the zero cells");
 		}
 		if (suid.length() > 1) {

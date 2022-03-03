@@ -25,4 +25,5 @@ public class SFContainsTest {
 	void testCCEqualsNegativeComplex() {
 		assertFalse(RHEALSFContains.contains("R1", "R10 R2"));
 	}
+	
 }

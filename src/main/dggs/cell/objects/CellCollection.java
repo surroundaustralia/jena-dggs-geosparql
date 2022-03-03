@@ -23,6 +23,10 @@ public class CellCollection {
 		// default compress to true
 		this.compressed = compress_opt.length > 0 ? compress_opt[0] : true;
 		
+		if ((suids.length()>8) && (suids.substring(0,8).equals("CELLLIST"))) {
+			suids = suids.substring(11, suids.length()-2);
+		}
+		
 		if (suids.isEmpty()) {
 			this.cells = null;
 			this.suids = null;
@@ -134,7 +138,7 @@ public class CellCollection {
 
 	// CellCollection Addition
 	public CellCollection add(CellCollection otherCC) {
-		String together = String.join(this.suids, otherCC.suids);
+		String together = this.suids + " " + otherCC.suids;
 		return new CellCollection(together);
 	}
 	

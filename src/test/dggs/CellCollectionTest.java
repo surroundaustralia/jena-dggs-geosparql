@@ -13,7 +13,13 @@ public class CellCollectionTest {
 	
 	@Test
 	void testBasicCellCollection() {
-		CellCollection testcellcoll = new CellCollection("R1 R2");
+		new CellCollection("R1 R2");
+	}
+	
+    // instantiation from CELLLIST (( ...
+	@Test
+	void testinstantiation() {
+		new CellCollection("CELLLIST ((R1 R2))");
 	}
 	
     // equality
@@ -69,7 +75,7 @@ public class CellCollectionTest {
 		CellCollection test2 = new CellCollection("R3 R4");
 		CellCollection test3 = new CellCollection("R1 R2 R3 R4");
 		CellCollection test4 = test1.add(test2);
-		assertFalse(test3.equals(test4));
+		assertTrue(test3.equals(test4));
 	}
 	
 	// cell overlap cell collection positive
@@ -141,6 +147,16 @@ public class CellCollectionTest {
 		CellCollection cells2 = new CellCollection("R1 R3 R5 R7");
 		CellCollection test = cells1.subtract(cells2);
 		CellCollection expected = new CellCollection("R0 R2 R4 R6 R8");
+		assertEquals(test, expected);
+	}
+	
+	// cell collection subtraction
+	@Test
+	void testSubtractionSimpleCelllist() {
+		CellCollection cells1 = new CellCollection("CELLLIST ((R))");
+		CellCollection cells2 = new CellCollection("CELLLIST ((R1 R3 R5 R7))");
+		CellCollection test = cells1.subtract(cells2);
+		CellCollection expected = new CellCollection("CELLLIST ((R0 R2 R4 R6 R8))");
 		assertEquals(test, expected);
 	}
 	
